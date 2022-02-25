@@ -25,3 +25,8 @@
 20 timing npm:load:setTitle Completed in 0ms
 21 timing config:load:flatten Completed in 2ms
 22 timing npm:load:display Completed in 3ms
+23 verbose logfile C:\Users\Mithat Kara\OneDrive\Masaüstü\redux\todo-app\_logs\2022-02-25T14_51_53_398Z-debug-0.log
+24 timing npm:load:logFile Completed in 7ms
+25 timing npm:load:timers Completed in 0ms
+26 timing npm:load:configScope Completed in 0ms
+27 timing npm:load Completed in 21ms
