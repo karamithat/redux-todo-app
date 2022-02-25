@@ -1,40 +1,48 @@
-import React from "react";
+import {useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { destroy, toggle } from "../redux/todos/todosSlice";
+import {selectFilteredTodos,getTodosAsync,toggleTodoAsync,removeTodoAsync} from "../redux/todos/todosSlice";
+import Loading from "./Loading";
+import Error from "./Error"
 
-let filtered = [];
+
 
 function TodoList() {
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.todos.items);
-  const activeFilter = useSelector((state) => state.todos.activeFilter);
+  const filteredTodos = useSelector(selectFilteredTodos);
+  const isLoading = useSelector((state) => state.todos.addNewTodo.isLoading );
+  const error = useSelector((state)=> state.todos.addNewTodo.error);
 
-  const handleDestroy = (id) => {
+  useEffect(()=>{
+    dispatch(getTodosAsync());
+  },[dispatch]);
+ 
+
+  const handleDestroy = async (id) => {
     if (window.confirm("Are you sure?")) {
-      dispatch(destroy(id));
+     await dispatch(removeTodoAsync(id));
     }
   };
-  
-  filtered = items;
-  if (activeFilter !== "all") {
-    filtered = items.filter((todo) =>
-      activeFilter === "active"
-        ? todo.completed === false && todo
-        : todo.completed === true && todo,
-    );
+  const handleToggle = async (id,completed) => {
+    await dispatch(toggleTodoAsync({id, data: {completed}}));
+  }
+  if(isLoading) {
+    return <Loading/>;
+  }
+  if(error) {
+    return <Error message={error}/>
   }
 
   return (
     <>
       <ul className="todo-list">
-        {filtered.map((item) => (
+        {filteredTodos.map((item) => (
           <li key={item.id} className={item.completed ? "completed" : ""}>
             <div className="view">
               <input
                 className="toggle"
                 type="checkbox"
                 checked={item.completed}
-                onChange={() => dispatch(toggle({ id: item.id }))}
+                onChange={() => handleToggle(item.id, !item.completed )}
               />
               <label>{item.title}</label>
               <button
